@@ -32,10 +32,14 @@
 <div class="container">
   <h2>Employee Dashboard Page
   </h2>
-   <a th:href="@{/customer/enquiries}"> 
-  <button type="button" class="btn btn-primary">Customer Enquiry</button>
+  <a th:href="@{/customer/enquiries}"> 
+  <button type="button" class="btn btn-primary">Customer Enquires</button>
+  </a>
+   <a th:href="@{/customer/accounts/approved}"> 
+  <button type="button" class="btn btn-primary">Account Approval</button>
   </a>
 <button type="button" class="btn btn-secondary">Lock/Unlock</button>
+
 <button type="button" class="btn btn-success">Customer Transaction</button>
 <button type="button" class="btn btn-danger">Check Book Request(s)</button>
 <button type="button" class="btn btn-warning">Loan Request</button>

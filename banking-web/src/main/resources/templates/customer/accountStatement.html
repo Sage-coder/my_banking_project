@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Account Statement Page</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+ 
+ <script type="text/javascript">
+
+  
+  $(document).ready(function() {
+	    $('##transactionTableList').dataTable( {
+	        'ordering':false}
+	    );
+	    
+	} );
+  </script>
+  
+  <style>
+.ffooter {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: red;
+  color: white;
+  text-align: center;
+  height: 30px;
+  background-color:#e9ffe7;
+}
+</style>
+</head>
+<body>
+<div th:fragment="header"></div>
+  <div th:insert="customer/header.html :: header"> </div>
+	
+  <br/>
+<div class="container">
+	
+  <h2>Account Statement</h2>
+  
+   <span th:utext="${error}" style="color: red;font-size: 18px;"></span>
+   <span th:utext="${removeMessage}" style="color: red;font-size: 18px;"></span>
+   <hr/>
+  
+  <div class="table-responsive">
+    <table  id="transactionTableList"  class="table table-striped table-bordered" style="width:100%">
+  <thead>
+  <tr>
+  <td id='dateCol' style='cursor:pointer;'><b>Date</b> </td>
+ <td><b>Transaction Type</b> </td>
+  <td><b>Payee AccountNo</b> </td>
+  <td><b>Payee NickName </b> </td>
+  <td> <b> Payee Name </b></td>
+   <td> <b>Amount</b> </td>
+  <td> <b>Description</b></td>
+  
+
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="transaction: ${transactionList}" >
+  
+  	<td th:text="${transaction.transactionDate}"/>
+  	<td th:text="${transaction.transactionType}"/>
+  	<td th:text="${transaction.payee.payeeAccountNo}"/>
+  	<td th:text="${transaction.payee.payeeNickName}"/>
+  	<td th:text="${transaction.payee.payeeName}"/>
+  	<td th:text="${transaction.amount}"/>
+  	<td th:text="${transaction.description}"/>
+  	
+  </tr>
+  </tbody>
+  </table>
+  </div>
+  </div>
+
+
+ 
+
+<footer  class="ffooter">
+</footer>
+
+</body>
+</html>
+

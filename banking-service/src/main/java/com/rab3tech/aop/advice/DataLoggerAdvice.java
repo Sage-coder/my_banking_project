@@ -1,10 +1,13 @@
 package com.rab3tech.aop.advice;
 
 import java.util.Arrays;
+import java.util.Date;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -22,14 +25,14 @@ private static final Logger logger = LoggerFactory.getLogger(DataLoggerAdvice.cl
     //.* = all the method
      //.. method with any parameter
     //* -any access specifier 
-/*	@Before("execution(* com.rab3tech.customer.service.impl.*.*(..))")
+	@Before("execution(* com.rab3tech.customer.service.impl.*.*(..))")
 	public void logMessage(JoinPoint joinPoint) {
 		String name=joinPoint.getSignature().getName();
 		logger.info("_________________________________________________");
 		logger.info(" Method name = "+name+" is called at "+new Date());
 		logger.info(" Method inputs are  {}", Arrays.asList(joinPoint.getArgs()));
 		logger.info("_________________________________________________");
-	}*/
+	}
 	
 	/*@Around("execution(* com.rab3tech.customer.service.impl.*.*(..))")
 	public Object computeTime(ProceedingJoinPoint joinPoint) {

@@ -9,6 +9,11 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <script
+  src="http://code.jquery.com/jquery-3.5.1.min.js"
+  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+  
   
   <style>
 .ffooter {
@@ -23,18 +28,22 @@
   background-color:#e9ffe7;
 }
 </style>
+
+
 </head>
 <body>
-<header style="height: 30px;background-color: maroon;color:white;">
-  Hello Mr. <span th:utext="${session.userSessionVO.username}" th:unless="${session == null}" style="font-weight: bold;"></span>
-   
-</header>
-<div class="container">
-  <h2>Customer Dashboard Page
-  </h2>
+	<div th:fragment="header"></div>
+	<div th:insert="customer/header.html :: header"> </div>
+	
+  <br/>
+  <div class="container">
+  <h2>Customer Dashboard</h2>
+  
   <img th:src="@{/images/customer_dashboard.jpg}" alt="page"/>
    <span th:utext="${error}" style="color: red;font-size: 18px;"></span>
+   
   <div style="width: 70%">
+
   </div>
 </div>
 <footer  class="ffooter">

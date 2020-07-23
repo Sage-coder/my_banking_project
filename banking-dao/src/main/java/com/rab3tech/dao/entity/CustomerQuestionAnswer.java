@@ -24,7 +24,7 @@ public class CustomerQuestionAnswer {
 	private Timestamp dom;
 	
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@JoinColumn(name="userid", nullable=false)
 	public Login getLogin() {
 		return login;

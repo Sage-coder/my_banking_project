@@ -1,7 +1,9 @@
 package com.rab3tech.user.ui.controller;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -15,14 +17,34 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.rab3tech.admin.service.impl.CustomerSecurityQuestionsService;
 import com.rab3tech.customer.service.LoginService;
+import com.rab3tech.customer.service.impl.SecurityQuestionService;
+import com.rab3tech.vo.CustomerSecurityQueAnsVO;
 import com.rab3tech.vo.LoginVO;
+import com.rab3tech.vo.SecurityQuestionsVO;
 
 @Controller
 public class LoginController {
 	
 	@Autowired
 	private LoginService loginService;
+	
+	@Autowired
+	private SecurityQuestionService securityQuestionService;
+	
+	@Autowired
+	private CustomerSecurityQuestionsService customersecurityQuestionsService;
+	
+	
+
+
+	@GetMapping(value={"/forgetPassword"})
+	public String forgetPassword(Model model){
+		
+		return "customer/forgetPassword";
+	}	
+	
 	
 	@GetMapping(value= {"/customer/login","/logout/success"})
 	public String showCustomerLogin(@RequestParam(value="error",required=false) boolean messsage,Model model) {
@@ -68,6 +90,18 @@ public class LoginController {
 						break;
 					case "CUSTOMER":
 						viewName ="customer/dashboard";
+						if(loginVO2.getLlt()==null) { //Means he logs in first time
+							viewName="customer/securityQuestion";
+							CustomerSecurityQueAnsVO customerSecurityQueAnsVO=new CustomerSecurityQueAnsVO();
+							List<SecurityQuestionsVO> questionsVOs=securityQuestionService.findAll();
+							Collections.shuffle(questionsVOs);
+							customerSecurityQueAnsVO.setQuestionsVOs(questionsVOs);
+							List<SecurityQuestionsVO> questionsVOs1=questionsVOs.subList(0, questionsVOs.size()/2);
+							List<SecurityQuestionsVO> questionsVOs2=questionsVOs.subList(questionsVOs.size()/2,questionsVOs.size());
+							model.addAttribute("questionsVOs1", questionsVOs1);
+							model.addAttribute("questionsVOs2", questionsVOs2);
+							model.addAttribute("customerSecurityQueAnsVO", customerSecurityQueAnsVO);
+						}
 						break;
 					case "ADMIN":
 						viewName ="admin/dashboard";

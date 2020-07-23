@@ -11,6 +11,30 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
   
   <style>
+  .cursor {
+    position: relative;
+}
+.cursor i {
+    position: absolute;
+    width: 1px;
+    height: 80%;
+    background-color: gray;
+    left: 5px;
+    top: 10%;
+    animation-name: blink;
+    animation-duration: 800ms;
+    animation-iteration-count: infinite;
+    opacity: 1;
+}
+
+.cursor input:focus + i {
+    display: none;
+}
+
+@keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
 .ffooter {
   position: fixed;
   left: 0;
@@ -23,9 +47,10 @@
   background-color:#e9ffe7;
 }
 </style>
+
 </head>
 <body>
-<header style="height: 30px;background-color: maroon;">
+<header style="height: 30px;background-color: darkblue;">
 </header>
 <div class="container">
   <h2>Customer Login Page
@@ -37,24 +62,31 @@
   <div style="width: 70%">
    <form th:action="@{/customer/login}" method="POST" >
     <div class="form-group">
-      <label for="username">Username:</label>
+      <label for="username">User Name:</label>
       <input type="text" style="width: 60%;" class="form-control"  name="username"  placeholder="Enter username">
     </div>
   
     <div class="form-group">
       <label for="password">Password:</label>
+      <div class="cursor">
        <input type="password" style="width: 60%;" class="form-control"  name="password"  placeholder="Enter password">
+    	<i></i>
+    </div>
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
     <button type="reset" class="btn btn-danger">Reset</button>
     <a th:href="@{/customer/account/enquiry}"> 
-    <button type="button" class="btn btn-warning">Customer Enquiry</button>
+    <button type="button" class="btn btn-warning">Customer Enquiry</button></a>
+    <a th:href="@{/forgetPassword}">
+    <button type="button" class="btn btn-warning">Forget Password</button>
     </a>
+    
   </form>
   </div>
 </div>
 <footer  class="ffooter">
 </footer>
+
 
 </body>
 </html>

@@ -15,4 +15,6 @@ public interface CustomerEnquiryService {
 	String updateEnquiryRegId(int csaid, String ucrid);
 	Optional<CustomerSavingVO> findCustomerEnquiryByUuid(String ucrid);
 	List<CustomerSavingVO> findPendingEnquiry();
+	CustomerSavingVO changeUpdateStatus(String email, String status);
+	List<CustomerSavingVO> findRegisteredEnquiry();
 }

@@ -1,0 +1,61 @@
+ <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<title>Add Payee</title>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+ <style>
+.ffooter {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: red;
+  color: white;
+  text-align: center;
+  height: 30px;
+  background-color:#e9ffe7;
+}
+</style>
+</head>
+<body>
+<div th:fragment="header"></div>
+  <div th:insert="customer/header.html :: header"> </div>
+  <br/>
+    <div class="container">
+        <h2>Add Payee</h2>
+        <hr/>
+        <span style="color: red;font-size: 18px;" id="message"></span>
+         <span th:utext="${message}" style="color: blue;font-size: 18px;font-weight: bold;"></span>
+        <form action="#" method="post"  th:action="@{/customer/account/savePayee}" th:object="${PayeeInfoVO}">
+         
+         
+         <input type="hidden"  class="form-control" th:value="${loginid}" name="loginid"    id="loginid">
+          
+        <label for="payeeNickName"><b>Payee Nick Name:</b></label>
+		<input type="text"  class="form-control"  name="payeeNickName"  placeholder="Enter payee nick name">
+        
+        <label for="payeeName"><b>Payee Name:</b></label>
+		<input type="text"  class="form-control"   name="payeeName"  placeholder="Enter payee name">
+        
+        <label for="payeeAccountNo"><b>Payee Account Number:</b></label>
+		<input type="text"  class="form-control"   name="payeeAccountNo"  placeholder="Enter payee account number">
+		
+		 <label for="remarks"><b>Remarks:</b></label>
+		<input type="text"  class="form-control"   name="remarks" placeholder="Enter your remarks">
+    
+		
+        <br/>
+        <button type="submit" class="btn btn-primary">Confirm </button>
+        
+        </form>
+  </div>
+  
+</body>
+</html>

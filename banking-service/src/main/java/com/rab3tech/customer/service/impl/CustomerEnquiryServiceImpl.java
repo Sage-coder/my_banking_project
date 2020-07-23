@@ -98,6 +98,15 @@ public class CustomerEnquiryServiceImpl implements CustomerEnquiryService {
 		return convertEntityIntoVO(customerSavingList);
 	}
 
+	
+		@Override
+		@TimeLogger
+		public List<CustomerSavingVO> findRegisteredEnquiry() {
+			List<CustomerSaving> customerSavingList = customerAccountEnquiryRepository.findPendingEnquiries(AccountStatusEnum.REGISTERED.name());
+			return convertEntityIntoVO(customerSavingList);
+		}
+
+	
 	@Override
 	@TimeLogger
 	public boolean emailNotExist(String email) {
@@ -108,6 +117,8 @@ public class CustomerEnquiryServiceImpl implements CustomerEnquiryService {
 			return true;	
 		}
 	}
+	
+	
 	
 	
 	@Override
@@ -180,6 +191,23 @@ public class CustomerEnquiryServiceImpl implements CustomerEnquiryService {
 			customerSavingVOList.add(customerSavingVO);
 		}
 		return customerSavingVOList;
+	}
+	
+
+	@Override
+	@TimeLogger
+	public CustomerSavingVO changeUpdateStatus(String email,String status) {
+		CustomerSaving customerSavingEntity = customerAccountEnquiryRepository.findByEmail(email).get();
+		//status = APPROVED
+		AccountStatus accountStatus=accountStatusRepository.findByName(status).get();
+		//Updating account status
+		customerSavingEntity.setStatus(accountStatus);
+		//Sending Back customer enquiry
+		CustomerSavingVO customerSavingVO = new CustomerSavingVO();
+		BeanUtils.copyProperties(customerSavingEntity, customerSavingVO, new String[] { "accType", "status" });
+		customerSavingVO.setAccType(customerSavingEntity.getAccType().getName());
+		customerSavingVO.setStatus(customerSavingEntity.getStatus().getName());
+		return customerSavingVO;
 	}
 
 }

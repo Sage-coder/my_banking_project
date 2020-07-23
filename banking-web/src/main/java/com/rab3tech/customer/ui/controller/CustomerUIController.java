@@ -70,7 +70,7 @@ public class CustomerUIController {
 	
 	@GetMapping("/customer/account/showRaiseRequest")
 	public String showChequeBookRequestPage( Model model,HttpSession session) {
-		String message="sweta bajra";
+		String message="sweta bajracharya";
 		LoginVO  loginVO2=(LoginVO)session.getAttribute("userSessionVO");
 		
 		if(loginVO2!=null) {

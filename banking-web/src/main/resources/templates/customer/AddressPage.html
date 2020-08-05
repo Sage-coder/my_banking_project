@@ -36,14 +36,14 @@
   <br/>
   <div class="container">
   <span th:utext="${error}" style="color:darkblue;font-size: 18px;"></span>
-  <h2>Addresss Form</h2>
+  <h2>Address Form</h2>
   	
         <hr/>
         <span style="color: red;font-size: 18px;" id="message"></span>
          
-        <form action="#" method="post"  th:action="@{/customer/account/submitChequeBookRequest}" th:object="${AddressVO}">
+        <form action="#" method="post"  th:action="@{/customer/account/saveAddressEntry}" >
          
-		<input type="hidden"  class="form-control" th:value="${loginid}" name="loginid"    id="loginid">
+		<input type="hidden"  class="form-control"  name="userId"    id="userId">
           
         <label for="first_name"><b>First Name:</b></label>
 		<input type="text"  class="form-control"  name="first_name"  placeholder="Enter the first name">
@@ -69,12 +69,14 @@
 		<label for="zipCode"><b>Zip Code:</b></label>
 		<input type="text"  class="form-control"  name="zipcode"  placeholder="Enter the zip code">
  
- 	<label for="country"><b>Country:</b></label>
+ 		<label for="country"><b>Country:</b></label>
 		<input type="text"  class="form-control"  name="country"  placeholder="Enter the country">
+		<button type="submit" class="btn btn-primary" >Submit</button>
 		
    		</form>
 </div>
-</div>
+<br/>
+
 <footer  class="ffooter">
 </footer>
 

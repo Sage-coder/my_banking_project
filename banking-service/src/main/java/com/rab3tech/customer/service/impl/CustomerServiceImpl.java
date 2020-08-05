@@ -1,6 +1,7 @@
 package com.rab3tech.customer.service.impl;
 
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,7 @@ import com.rab3tech.dao.entity.CustomerQuestionAnswer;
 import com.rab3tech.dao.entity.CustomerSaving;
 import com.rab3tech.dao.entity.CustomerSavingApproved;
 import com.rab3tech.dao.entity.Login;
+import com.rab3tech.dao.entity.RequestType;
 import com.rab3tech.dao.entity.Role;
 import com.rab3tech.dao.entity.SecurityQuestions;
 import com.rab3tech.utils.AccountStatusEnum;
@@ -47,6 +49,7 @@ import com.rab3tech.vo.CustomerSecurityQueAnsVO;
 import com.rab3tech.vo.CustomerVO;
 import com.rab3tech.vo.LoginVO;
 import com.rab3tech.vo.PayeeInfoVO;
+import com.rab3tech.vo.RequestTypeVO;
 
 @Service
 @Transactional
@@ -170,11 +173,24 @@ public class CustomerServiceImpl implements  CustomerService{
 		else {
 			return Optional.empty();
 		}
+}
 	
+	@Override
+	public  List<CustomerAccountInfoVO> findListByUserId(String customerId){
+		Customer customer=customerRepository.findByEmail(customerId).get();
+		List<CustomerAccountInfo> account=customerAccountInfoRepository.findByEmail(customer.getLogin());
+		List<CustomerAccountInfoVO> accountVO=new ArrayList<>();
+		for(CustomerAccountInfo ca:account) {
+			CustomerAccountInfoVO vos=new CustomerAccountInfoVO();
+			//vos.setCustomerId(customer.getEmail());
+			BeanUtils.copyProperties(ca, vos);
+			
+			accountVO.add(vos);
+		}
+		
+		return accountVO;
+}
 	
-	
-	
-	}
 	@Override
 	public CustomerVO createAccount(CustomerVO customerVO) {
 		Customer pcustomer = new Customer();
@@ -226,6 +242,7 @@ public class CustomerServiceImpl implements  CustomerService{
 		List<SecurityQuestions> questionList=securityQuestionsRepository.findAll();
 		return customerVO;
 		}
+	
 	
 	@Override
 	public void updateCustomer(CustomerVO customerVO) {

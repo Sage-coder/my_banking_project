@@ -1,5 +1,6 @@
 package com.rab3tech.customer.dao.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,8 @@ public interface CustomerAccountInfoRepository extends JpaRepository<CustomerAcc
 	
 	@Query("SELECT t FROM CustomerAccountInfo t where t.accountNumber=  :payeeAccountNumber")
 	Optional <CustomerAccountInfo> findAccountByAccountNumber(@Param("payeeAccountNumber" ) String accountNumber);
+	
+	@Query("SELECT t FROM CustomerAccountInfo t where t.customerId=  :puserid")
+	List<CustomerAccountInfo> findByEmail(@Param("puserid" )Login customerId);
+
 }

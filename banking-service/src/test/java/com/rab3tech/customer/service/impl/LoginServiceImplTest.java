@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.rab3tech.customer.dao.repository.LoginRepository;
 import com.rab3tech.dao.entity.Login;
@@ -32,6 +33,8 @@ public class LoginServiceImplTest {
 	@InjectMocks
 	private LoginServiceImpl loginServiceImpl;
 	
+	@Mock
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	@Before
 	public void init() {
@@ -99,5 +102,36 @@ public class LoginServiceImplTest {
 		Optional<LoginVO> loginVO2=loginServiceImpl.authUser(loginVO);
 		assertFalse(loginVO2.isPresent());
 	}
+	
+	/*
+	@Override
+	public boolean checkPasswordValid(String username,String password) {
+		Login  login=loginRepository.findByLoginid(username).get();
+		if(bCryptPasswordEncoder.matches(password, login.getPassword())) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	*/
+	
+	@Test
+	public void testcheckPasswordValidWhenExist() {
+		Login logins=new Login();
+		
+		logins.setLoginid("123");
+		logins.setName("Sweta");
+		logins.setPassword("hello");
+		when(bCryptPasswordEncoder.matches("hello",logins.getPassword())).thenReturn(true);
+		
+		Optional<Login> ologin=Optional.of(logins);
+		when(loginRepository.findByLoginid("123")).thenReturn(ologin);
+		
+		boolean result=loginServiceImpl.checkPasswordValid("123", "hello");
+		assertEquals(true, result);
+		
+		
+	}
+	
 
 }

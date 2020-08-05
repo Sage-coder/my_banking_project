@@ -10,4 +10,6 @@ public interface EmailService {
 
 	String sendUsernamePasswordEmail(EmailVO mail);
 
+	String sendRequestEmail(EmailVO mail);
+
 }

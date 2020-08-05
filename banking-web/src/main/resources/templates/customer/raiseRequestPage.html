@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>PayeeList Page</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+   <script type="text/javascript">
+  
+  
+  function deleteRow(){
+ 	  var addressId= document.getElementById("Remove").value;
+	  //alert("calling delete"+payeeid);
+		 fetch("http://localhost:999/customer/deleteCustomerAddress/"+addressId)
+	  .then((resp)=>resp.json())
+	  .then(data=> {
+ 		  console.log(data);
+		 // alert("calling delete"+data);
+ 	  document.getElementById("removeMessage").innerHTML=data.message;
+ 	  $("#row_"+addressId).hide();
+	  });
+  }
+  
+
+  function saveAddress(){
+	
+	  var customerAddress={};
+	  customerAddress.addressId=$("#addressId").val();
+		 customerAddress.first_name=$("#first_name").val();
+		 customerAddress.last_name=$("#last_name").val();
+		 customerAddress.address_line_1=$("#address_line_1").val();
+		 customerAddress.address_line_2=$("#address_line_2").val();
+		 customerAddress.city=$("#city").val();
+		 customerAddress.state=$("#state").val();
+		 customerAddress.zipcode=$("#zipcode").val();
+		 customerAddress.country=$("#country").val();
+	  
+// 	  js object to json
+ 
+	var jsonString = JSON.stringify(customerAddress);
+	const input ={
+			method:'POST',
+			body:jsonString,
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			}
+	};
+	
+	
+	var addressId=fetch("/customer/editCustomerAddress",input);
+	addressId.then(res=> res.json()).then(data=>{
+		console.log(data);
+		$("#myModal").hide();
+//		$("#mmessage").html(data.message);
+	 });
+	
+	}
+  
+  function openModal(addressId,first_name,last_name,address_line_1,address_line_2,city,state,zipcode,country){
+		  $("#addressId").val(addressId); 
+		  $("#first_name").val(first_name);
+		 $("#last_name").val(last_name);		 
+		 $("#address_line_1").val(address_line_1);
+		 $("#address_line_2").val(address_line_2);
+		 $("#city").val(city);
+		 $("#state").val(state);
+		 $("#zipcode").val(zipcode);
+		 $("#country").val(country);
+		 $("#myModal").modal('show');
+		 }
+  
+  
+ 
+  </script>
+  
+  
+  <style>
+.ffooter {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: red;
+  color: white;
+  text-align: center;
+  height: 30px;
+  background-color:#e9ffe7;
+}
+</style>
+</head>
+<body>
+	<div th:fragment="header"></div>
+	<div th:insert="customer/header.html :: header"> </div>
+	
+  <br/>
+	<div class="container">
+`
+<h2> Customer Address Details</h2>
+<span th:utext="${customerAddressVOs.first_name} +' '+${customerAddressVOs.last_name}"  ></span>
+<br/>
+<span th:utext="${customerAddressVOs.userId} +' '+${customerAddressVOs.mobile_number}"  ></span>
+<br/>
+<span th:utext="${customerAddressVOs.address_line_1} +', '+${customerAddressVOs.address_line_2}+', '+${customerAddressVOs.city}+', '+${customerAddressVOs.state}+', '+${customerAddressVOs.zipcode}+', '+${customerAddressVOs.country}"  ></span>
+<br/>
+<br/>
+<!-- Button to Open the Modal -->
+
+<a th:onclick="|openModal('${customerAddressVOs.addressId}','${customerAddressVOs.first_name}','${customerAddressVOs.last_name}','${customerAddressVOs.address_line_1}',
+'${customerAddressVOs.address_line_2}','${customerAddressVOs.city}','${customerAddressVOs.state}','${customerAddressVOs.zipcode}','${customerAddressVOs.country}')|" href="#">
+<button type="button" class="btn btn-info " >Edit</button>
+</a>
+<button type="button" id="remove" th:value="${customerAddressVOs.addressId}" onclick="deleteRow()" class="btn btn-success">Remove</button>
+
+
+	<hr/>
+	<table>
+	<tr th:each="vo:${vos}">
+		<td>
+	
+		  <!--<a th:href="@{'customer/account/raiseRequest?id='+${vo.id}}">-->	
+		  <a th:href="@{/raiseRequest(id=${vo.id})}">
+		<!--<a th:href="@{customer/account/raiseRequest?id='${vo.id}'}">-->	
+		<span th:text="${vo.description}"}></span>
+		</a>
+</td>
+</tr>
+</table>
+</div>
+
+
+<footer  class="ffooter">
+</footer>
+
+
+
+
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Customer Address</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+<div class="col">
+<input type="hidden" class="form-control" id="addressId"  name="addressId">
+<b>First Name</b>
+<input type="text" class="form-control" id="first_name"  name="first_name">
+</div>
+<div class="col">
+<b>Last Name</b>
+<input type="text" class="form-control" id="last_name" name="last_name">
+</div>
+</div>
+
+<div class="row">
+<div class="col">
+<b>Address Line 1</b>
+<input type="text" class="form-control" id="address_line_1"  name="address_line_1">
+</div>
+<div class="col">
+<b>Address Line 2</b>
+<input type="text" class="form-control" id="address_line_2" name="address_line_2" >
+</div>
+</div>
+
+<div class="row">
+<div class="col">
+<b>City</b>
+<input type="text" class="form-control" id="city" name="city" >
+</div>
+<div class="col">
+<b>State</b>
+<input type="text" class="form-control" id="state" name="state">
+</div>
+<div class="col">
+<b>ZipCode</b>
+<input type="text" class="form-control" id="zipcode" name="zipcode" >
+</div>
+</div>
+
+<div class="row">
+<div class="col">
+<b>Country</b>
+<input type="text" class="form-control" name="country" id="country" >
+</div>
+</div>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-default" data-dismiss="modal"  style="background-color: blue; color: white;" onclick="saveAddress();">Submit</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+

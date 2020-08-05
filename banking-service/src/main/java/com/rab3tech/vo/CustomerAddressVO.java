@@ -4,7 +4,7 @@ import com.rab3tech.dao.entity.Login;
 
 public class CustomerAddressVO {
 	private int addressId;
-	private LoginVO userId;
+	private String userId;
 	private String first_name;
 	private String last_name;
 	private String mobile_number;
@@ -14,6 +14,7 @@ public class CustomerAddressVO {
 	private String state;
 	private String zipcode;
 	private String country;
+	
 	public int getAddressId() {
 		return addressId;
 	}
@@ -21,10 +22,10 @@ public class CustomerAddressVO {
 		this.addressId = addressId;
 	}
 	
-	public LoginVO getUserId() {
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(LoginVO userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	public String getFirst_name() {
@@ -81,6 +82,14 @@ public class CustomerAddressVO {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+	@Override
+	public String toString() {
+		return "CustomerAddressVO [addressId=" + addressId + ", userId=" + userId + ", first_name=" + first_name
+				+ ", last_name=" + last_name + ", mobile_number=" + mobile_number + ", address_line_1=" + address_line_1
+				+ ", address_line_2=" + address_line_2 + ", city=" + city + ", state=" + state + ", zipcode=" + zipcode
+				+ ", country=" + country + "]";
+	}
+	
 	
 	
 }

@@ -19,12 +19,14 @@ import com.rab3tech.admin.dao.repository.AccountStatusRepository;
 import com.rab3tech.admin.dao.repository.AccountTypeRepository;
 import com.rab3tech.admin.dao.repository.MagicCustomerRepository;
 import com.rab3tech.customer.dao.repository.LoginRepository;
+import com.rab3tech.customer.dao.repository.RequestTypeRepository;
 import com.rab3tech.customer.dao.repository.RoleRepository;
 import com.rab3tech.customer.dao.repository.SecurityQuestionsRepository;
 import com.rab3tech.dao.entity.AccountStatus;
 import com.rab3tech.dao.entity.AccountType;
 import com.rab3tech.dao.entity.Customer;
 import com.rab3tech.dao.entity.Login;
+import com.rab3tech.dao.entity.RequestType;
 import com.rab3tech.dao.entity.Role;
 import com.rab3tech.dao.entity.SecurityQuestions;
 
@@ -43,6 +45,8 @@ public class DataPusher implements CommandLineRunner {
 	@Autowired
 	private AccountTypeRepository accountTypeRepository;
 	
+	@Autowired
+	private RequestTypeRepository requestTypeRepository;
 	
 	@Autowired
 	private 	SecurityQuestionsRepository securityQuestionsRepository;
@@ -96,6 +100,7 @@ public class DataPusher implements CommandLineRunner {
 			
 		}
 		
+		
 		Optional<Role> optional3=roleRepository.findById(1);
 		if(!optional3.isPresent()) {
 			Role role1=new Role(1,"ADMIN","ADMIN");
@@ -111,6 +116,24 @@ public class DataPusher implements CommandLineRunner {
 			
 			roleRepository.saveAll(roles);
 		}
+		
+		Optional<RequestType> optional4=requestTypeRepository.findById(1);
+		if(!optional4.isPresent()) {
+			RequestType requestType1=new RequestType(1,"REQ1","CHEQUE","Cheque Book Request",1);
+			RequestType requestType2=new RequestType(2,"REQ2","LOAN","Loan Request",1);
+			RequestType requestType3=new RequestType(3,"REQ3","CREDIT_CARD","Credit Card Request",1);
+			RequestType requestType4=new RequestType(4,"REQ4","MOBILE_NUMBER","Mobile Change Request",1);
+			
+			List<RequestType> requestTypes=new ArrayList<>();
+			requestTypes.add(requestType1);
+			requestTypes.add(requestType2);
+			requestTypes.add(requestType3);
+			requestTypes.add(requestType4);
+			
+			requestTypeRepository.saveAll(requestTypes);
+			requestTypeRepository.save(requestType1);
+		}
+		
 		Optional<Login> optional=loginRepository.findByLoginid(empUsername);
 		if(!optional.isPresent()) {
 			Customer pcustomer = new Customer();

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Cheque Book Request Page</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script
+	src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript">
+
+
+	function confirmAddress(){
+	var customerconfirm;
+
+	if (confirm("Do you want to confirm?") == true) {
+			customerconfirm = "Your cheque loan request is in process!";
+	} else {
+		customerconfirm= "Save Canceled!";
+	
+	}
+	document.getElementById("msg").innerHTML = customerconfirm; 
+	}
+
+function sendEmail(){
+	 	var userId = $("#confirm").val();
+		 const input={
+			 method:'POST',
+			 body:'userId',
+			 headers:{
+				 'Content-Type':'application/json',
+				 'Accept':'application/json'
+			 }
+	 };
+		  
+	 var promise=fetch("/customer/sendRaise/RequestEmail/"+userId,input);
+	 promise.then(res=>res.json())
+	 .then(data=>{
+		 if(data.code==200){
+		 	$("#confirmModal").modal("hide");
+		 	$("#clickdisplay").show();
+			$('.info').hide();
+			$("#ref").html(data.message);}
+		 else{
+			$("#confirmModal").modal("hide");
+			$('.info').hide();
+		 });
+		
+		 
+ });
+	 //<!--var T = document.getElementById("clickdisplay");
+	    //<!-- T.style.display = "block";  // <-- Set it to block 
+	
+	}
+
+</script>
+
+<style>
+.ffooter {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background-color: red;
+	color: white;
+	text-align: center;
+	height: 30px;
+	background-color: #e9ffe7;
+}
+</style>
+</head>
+<body>
+	<div th:fragment="header"></div>
+	<div th:insert="customer/header.html :: header"></div>
+
+	<div class="container">
+		`
+		<h2>Check Book Request</h2>
+		<h2 th:utext="${message}"></h2>
+		<div id="clickdisplay" style="display: none">Your request has
+			been submitted successfully.</div>
+
+		<div class="info" style="display: block">
+
+
+			<h5>Account Number:</h5>
+			<select class="form-control" name="accountNo" id="accountNo"
+				style="width: 50%">
+				<option value="">Select account number</option>
+				<option th:each="customerInfo : ${customerInfoList}"
+					th:value="${customerInfo.id}"
+					th:text="${customerInfo.accountNumber}"></option>
+			</select> <br />
+
+			<h5>Your cheque book will be delivered on below address:</h5>
+
+			<span
+				th:utext="${customerAddressVOs.first_name} +' '+${customerAddressVOs.last_name}"></span>
+			<br /> <span th:utext="${customerAddressVOs.userId} " id="userId"
+				name="userId"></span> <br /> <span
+				th:utext="${customerAddressVOs.mobile_number}"></span> <span
+				th:utext="${customerAddressVOs.address_line_1} +', '+${customerAddressVOs.address_line_2}+', '+${customerAddressVOs.city}+', '+${customerAddressVOs.state}+', '+${customerAddressVOs.zipcode}+', '+${customerAddressVOs.country}"></span>
+			<br />
+			<!--  <button type="submit" id="sub" class="btn btn-success" onclick="if(confirm('Are you sure, the address you have entered is correct?')) sendEmail()";>Confirm</button>
+-->
+			<br/>
+			<button type="submit" class="btn btn-success" data-toggle="modal"
+				data-target="#confirmModal">Confirm</button>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog"
+		aria-labelledby="confirmModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">Are you sure, you want to confirm?</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">No</button>
+					<button type="submit" id="confirm"
+						th:value="${customerAddressVOs.userId}" onclick="sendEmail()"
+						class="btn btn-primary">Yes, Confirm</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

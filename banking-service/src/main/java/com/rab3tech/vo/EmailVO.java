@@ -9,6 +9,7 @@ public class EmailVO {
 	private String registrationlink;
 	private String username;
 	private String password;
+	private String refNumber;
 	
 	public EmailVO() {}
 
@@ -21,6 +22,24 @@ public class EmailVO {
 	}
 	
 	
+
+	public EmailVO(String name, String to, String from, String subject, String body, String refNumber) {
+		super();
+		this.name = name;
+		this.to = to;
+		this.from = from;
+		this.subject = subject;
+		this.body = body;
+		this.refNumber = refNumber;
+	}
+
+	public String getRefNumber() {
+		return refNumber;
+	}
+
+	public void setRefNumber(String refNumber) {
+		this.refNumber = refNumber;
+	}
 
 	public String getUsername() {
 		return username;

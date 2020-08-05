@@ -155,4 +155,47 @@ public class EmailServiceImpl implements EmailService{
 	        return "done";
 	}
 
+	
+	@Override
+	@Async("threadPool")
+	public String sendRequestEmail(EmailVO mail)  {
+		
+		 try {
+		    MimeMessage message = javaMailSender.createMimeMessage();
+	        MimeMessageHelper helper = new MimeMessageHelper(message,
+	                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+	                StandardCharsets.UTF_8.name());
+	        Context context = new Context();
+	        Map<String,Object> props=new HashMap<>();
+	        props.put("name", mail.getName());
+	        props.put("refNo", mail.getRefNumber());
+	        props.put("sign", "Cubic Bank");
+	        props.put("location", "Fremont CA100 , USA");
+	        props.put("email", "cubic_bank@gmail.com");
+	        context.setVariables(props);
+	        String html = templateEngine.process("loan-request-email-template", context);
+	        helper.setTo(mail.getTo());
+	        helper.setText(html, true);
+	        helper.setSubject("Regarding Account enquiry to open an account.");
+	        helper.setFrom(mail.getFrom());
+	        
+	        
+	        File cfile=new ClassPathResource("images/cb1.png", EmailServiceImpl.class.getClassLoader()).getFile();
+	        byte[] cbytes=Files.readAllBytes(cfile.toPath());
+	        InputStreamSource cimageSource =new ByteArrayResource(cbytes);
+	        helper.addInline("cb", cimageSource, "image/png");
+	        
+	        
+	        File file=new ClassPathResource("images/bank-icon.png", EmailServiceImpl.class.getClassLoader()).getFile();
+	        byte[] bytes=Files.readAllBytes(file.toPath());
+	        InputStreamSource imageSource =new ByteArrayResource(bytes);
+	        helper.addInline("bankIcon", imageSource, "image/png");
+	        
+	        javaMailSender.send(message);
+		 }catch (Exception e) {
+			e.printStackTrace();
+		 }   
+	        return "done";
+	}
+
 }

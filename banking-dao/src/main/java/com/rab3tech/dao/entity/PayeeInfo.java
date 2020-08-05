@@ -27,6 +27,26 @@ public class PayeeInfo implements Serializable{
 	
 	
 	
+	public PayeeInfo() {
+		super();
+	}
+
+	public PayeeInfo(int id, String payeeAccountNo, String payeeName, String payeeNickName, String customerId,
+			Timestamp doe, Timestamp dom, String remarks, String status, int urn, String email) {
+		super();
+		this.id = id;
+		this.payeeAccountNo = payeeAccountNo;
+		this.payeeName = payeeName;
+		this.payeeNickName = payeeNickName;
+		this.customerId = customerId;
+		this.doe = doe;
+		this.dom = dom;
+		this.remarks = remarks;
+		this.status = status;
+		this.urn = urn;
+		this.email = email;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -128,5 +148,31 @@ public class PayeeInfo implements Serializable{
 				+ ", payeeNickName=" + payeeNickName + ", customerId=" + customerId + ", doe=" + doe + ", dom=" + dom
 				+ ", remarks=" + remarks + ", status=" + status + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((customerId == null) ? 0 : customerId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PayeeInfo other = (PayeeInfo) obj;
+		if (customerId == null) {
+			if (other.customerId != null)
+				return false;
+		} else if (!customerId.equals(other.customerId))
+			return false;
+		return true;
+	}
+	
 	
 }

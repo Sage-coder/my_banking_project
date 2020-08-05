@@ -12,9 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.rab3tech.customer.dao.repository.CustomerAccountInfoRepository;
+import com.rab3tech.customer.service.CustomerRequestService;
 import com.rab3tech.customer.service.CustomerService;
 import com.rab3tech.customer.service.LoginService;
 import com.rab3tech.customer.service.impl.CustomerAddressService;
@@ -22,14 +25,18 @@ import com.rab3tech.customer.service.impl.CustomerEnquiryService;
 import com.rab3tech.customer.service.impl.PayeeInfoService;
 import com.rab3tech.customer.service.impl.SecurityQuestionService;
 import com.rab3tech.customer.service.impl.TransactionService;
+import com.rab3tech.dao.entity.CustomerAddress;
 import com.rab3tech.email.service.EmailService;
 import com.rab3tech.vo.ChangePasswordVO;
+import com.rab3tech.vo.CustomerAccountInfoVO;
+import com.rab3tech.vo.CustomerAddressVO;
 import com.rab3tech.vo.CustomerSavingVO;
 import com.rab3tech.vo.CustomerSecurityQueAnsVO;
 import com.rab3tech.vo.CustomerVO;
 import com.rab3tech.vo.EmailVO;
 import com.rab3tech.vo.LoginVO;
 import com.rab3tech.vo.PayeeInfoVO;
+import com.rab3tech.vo.RequestTypeVO;
 import com.rab3tech.vo.SecurityQuestionsVO;
 import com.rab3tech.vo.TransactionVO;
 
@@ -60,6 +67,9 @@ public class CustomerUIController {
 	   private TransactionService transactionService;
 	
 	@Autowired
+	   private CustomerRequestService customerRequestService;
+	
+	@Autowired
 	private SecurityQuestionService securityQuestionService;
 	
 	@Autowired
@@ -68,28 +78,154 @@ public class CustomerUIController {
 	@Autowired
 	private CustomerAddressService customerAddressService;
 	
+	@Autowired
+	private CustomerAccountInfoRepository customerAccountInfoRepository;
+	
+	@GetMapping("/customer/account/showAddressEntry")
+	public String showCustomerAddress(@ModelAttribute CustomerAddressVO customerAddressVO, Model model,HttpSession session) {
+		LoginVO  loginVO2=(LoginVO)session.getAttribute("userSessionVO");
+		if(loginVO2!=null) {
+		return "customer/AddressPage";
+		}
+		else {
+			model.addAttribute("error","PLease login to proceed further");
+			return "customer/login";
+		}
+	}
+	
+	//To save the adddress page
+	@PostMapping("/customer/account/saveAddressEntry")
+	public String saveCustomerAddress(@ModelAttribute CustomerAddressVO customerAddressVO, Model model,HttpSession session) {
+		String message=null;
+		LoginVO  loginVO2=(LoginVO)session.getAttribute("userSessionVO");
+		if(loginVO2!=null) {
+			customerAddressVO.setUserId(loginVO2.getUsername());
+		message=customerAddressService.saveCustomerAddress(customerAddressVO);
+		model.addAttribute("message",message);
+		return "customer/raiseRequestPage";
+		}
+		else {
+			model.addAttribute("error","PLease login to proceed further");
+			return "customer/login";
+		}
+	}
+	
+	//To show the raise request page
 	@GetMapping("/customer/account/showRaiseRequest")
-	public String showChequeBookRequestPage( Model model,HttpSession session) {
-		String message="sweta bajracharya";
+	public String showChequeBookRequestPage( @ModelAttribute CustomerAddressVO customerAddressVO,Model model,HttpSession session) {
+		
 		LoginVO  loginVO2=(LoginVO)session.getAttribute("userSessionVO");
 		
 		if(loginVO2!=null) {
 		String userId=loginVO2.getUsername();
 		boolean result=customerAddressService.checkAddressPresentOrNot(userId);
+		
+		
+		//customerInfo=customerAccountInfoRepository.findAccountByEmail(loginVO2.getEmail());
 			if(result) {
-			return "customer/AddressPage";
+			Optional<CustomerAddressVO> customerAddress=customerAddressService.saveAddressPresentOrNot(userId);
+			
+				if(customerAddress.isPresent()) {
+					
+					model.addAttribute("customerAddressVOs", customerAddress.get());
+					List<RequestTypeVO> vos=customerRequestService.findAllRequests();
+					model.addAttribute("vos",vos);
+					return "customer/raiseRequestPage";
+				}
+				else {
+					return "customer/AddressPage";
 			}
-			else {
-				return "customer/dashboard";
+			}
+				else {
+					return "customer/AddressPage";
 			}
 		
 		}
 		else {
 			model.addAttribute("error","PLease login to proceed further");
 			return "customer/login";}
+		
 		}
 		
+	//To show the dynamic links of the raise request page
+	@GetMapping("/raiseRequest")
+	public String showDynamicLinksForRaiseRequestPage(@RequestParam int id,Model model,HttpSession session) {
+		LoginVO  loginVO2=(LoginVO)session.getAttribute("userSessionVO");
+		if(loginVO2!=null) {
+		String userId=loginVO2.getUsername();
+		boolean result=customerAddressService.checkAddressPresentOrNot(userId);
+		List<CustomerAccountInfoVO> customerInfoList=customerService.findListByUserId(loginVO2.getUsername());
+		if(result) {
+			Optional<CustomerAddressVO> customerAddress=customerAddressService.saveAddressPresentOrNot(userId);
+			
+				if(customerAddress.isPresent()) {
+					model.addAttribute("customerAddressVOs", customerAddress.get());
+					model.addAttribute("customerInfoList",customerInfoList);
+					RequestTypeVO vo=customerRequestService.findById(id);
+					if(vo.getStatus()==1) {
+						String page="customer"+"/"+vo.getName().toLowerCase();
+						return page;
+					}
+					else {
+					List<RequestTypeVO> vos=customerRequestService.findAllRequests();
+					
+					model.addAttribute("vos",vos);
+					return "customer/raiseRequestPage";
+					}
+				}
+				else {
+					return "customer/AddressPage";
+		}
+		}
+				else {
+					return "customer/AddressPage";}
+		}
+		else {
+			model.addAttribute("error","PLease login to proceed further");
+			return "customer/login";}
+					
+		
+	}
 	
+	/*@PostMapping("/customer/account/enquiry")
+	public String submitEnquiryData(@ModelAttribute CustomerSavingVO customerSavingVO, Model model) {
+		boolean status = customerEnquiryService.emailNotExist(customerSavingVO.getEmail());
+		logger.info("Executing submitEnquiryData");
+		if (status) {
+			CustomerSavingVO response = customerEnquiryService.save(customerSavingVO);
+			logger.debug("Hey Customer , your enquiry form has been submitted successfully!!! and appref "
+					+ response.getAppref());
+			model.addAttribute("message",
+					"Hey Customer , your enquiry form has been submitted successfully!!! and appref "
+							+ response.getAppref());
+		} else {
+			model.addAttribute("message", "Sorry , this email is already in use " + customerSavingVO.getEmail());
+		}
+		return "customer/success"; // customerEnquiry.html
+
+	}
+	
+	//send email for verification of address in cheque book request
+	@PostMapping("/customer/account/request")
+	public String sendRequestEmail( @ModelAttribute CustomerAddressVO customerAddressvo,HttpSession session) {
+		LoginVO  loginVO2=(LoginVO)session.getAttribute("userSessionVO");
+		if(loginVO2!=null) {
+		String userId=loginVO2.getUsername();
+		boolean status = customerAddressService.checkAddressPresentOrNot(userId);
+		logger.info("Executing submitChequeRequest");
+		if (status) {
+			CustomerAddressVO response = customerAddressService.save(customerAddressVO);
+			logger.debug("Hey Customer , your enquiry form has been submitted successfully!!! and appref "
+					+ response.getAppref());
+			model.addAttribute("message",
+					"Hey Customer , your enquiry form has been submitted successfully!!! and appref "
+							+ response.getAppref());
+		} else {
+			model.addAttribute("message", "Sorry , this email is already in use " + customerSavingVO.getEmail());
+		}
+		return "customer/success"; // customerEnquiry.html
+
+	}*/
 	
 	//Account Statement
 	@GetMapping("/customer/account/showAccountStatement")
@@ -420,5 +556,7 @@ public class CustomerUIController {
 		logger.debug(customerVO.toString());
 		return "customer/updateProfile";
 	}
+	
+	
 	
 }
